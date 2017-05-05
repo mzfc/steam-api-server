@@ -1,0 +1,389 @@
+---
+swagger: "2.0"
+info:
+  description: "This is STeam API"
+  version: "1.0.0"
+  title: "STeam API"
+  contact:
+    email: "lovelywib@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "virtserver.swaggerhub.com"
+basePath: "/mattshen/steamapi/1.0.0"
+tags:
+- name: "admins"
+  description: "Secured Admin-only calls"
+- name: "developers"
+  description: "Operations available to regular developers"
+- name: "users"
+  description: "Operations available to regular users"
+schemes:
+- "https"
+security:
+- basicAuth: []
+paths:
+  /users:
+    get:
+      tags:
+      - "users"
+      summary: "search users"
+      description: "By passing in the appropirate options, you can search for\navailable\
+        \ users in the system\n"
+      operationId: "searchUsers"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "searchString"
+        in: "query"
+        description: "pass an optional search string for looking up users"
+        required: false
+        type: "string"
+      - name: "teamId"
+        in: "query"
+        description: "passing teamId to get members of the teams"
+        required: false
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/User"
+        400:
+          description: "bad input parameter"
+        401:
+          description: "Authentication information is missing or invalid"
+          headers:
+            WWW_Authenticate:
+              type: "string"
+      security:
+      - users_auth:
+        - "write:users"
+        - "read:users"
+      x-swagger-router-controller: "Users"
+    post:
+      tags:
+      - "developers"
+      summary: "create a new user"
+      description: ""
+      operationId: "createUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "User object that needs to be created"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        405:
+          description: "Invalid input"
+      x-swagger-router-controller: "Developers"
+  /teams:
+    get:
+      tags:
+      - "users"
+      summary: "search teams"
+      description: "By passing in the appropirate options, you can search for\navailable\
+        \ teams in the system\n"
+      operationId: "searchTeams"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "searchString"
+        in: "query"
+        description: "pass an optional search string for looking up teams"
+        required: false
+        type: "string"
+      - name: "skip"
+        in: "query"
+        description: "number of records to skip for pagination"
+        required: false
+        type: "integer"
+        minimum: 0
+        format: "int32"
+      - name: "limit"
+        in: "query"
+        description: "maximum number of records to return"
+        required: false
+        type: "integer"
+        maximum: 30.0
+        minimum: 0
+        format: "int32"
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Team"
+        400:
+          description: "bad input parameter"
+      x-swagger-router-controller: "Users"
+    post:
+      tags:
+      - "users"
+      summary: "create a new team"
+      description: ""
+      operationId: "createTeam"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "team object that needs to be added to the system"
+        required: true
+        schema:
+          $ref: "#/definitions/Team"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        405:
+          description: "Invalid input"
+      x-swagger-router-controller: "Users"
+  /inventory:
+    get:
+      tags:
+      - "developers"
+      summary: "searches inventory"
+      description: "By passing in the appropriate options, you can search for\navailable\
+        \ inventory in the system\n"
+      operationId: "searchInventory"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "searchString"
+        in: "query"
+        description: "pass an optional search string for looking up inventory"
+        required: false
+        type: "string"
+      - name: "skip"
+        in: "query"
+        description: "number of records to skip for pagination"
+        required: false
+        type: "integer"
+        minimum: 0
+        format: "int32"
+      - name: "limit"
+        in: "query"
+        description: "maximum number of records to return"
+        required: false
+        type: "integer"
+        maximum: 50.0
+        minimum: 0
+        format: "int32"
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/InventoryItem"
+        400:
+          description: "bad input parameter"
+      x-swagger-router-controller: "Developers"
+    post:
+      tags:
+      - "admins"
+      summary: "adds an inventory item"
+      description: "Adds an item to the system"
+      operationId: "addInventory"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "inventoryItem"
+        description: "Inventory item to add"
+        required: false
+        schema:
+          $ref: "#/definitions/InventoryItem"
+      responses:
+        201:
+          description: "item created"
+        400:
+          description: "invalid input, object invalid"
+        409:
+          description: "an existing item already exists"
+      x-swagger-router-controller: "Admins"
+securityDefinitions:
+  users_auth:
+    type: "oauth2"
+    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:users: "users can write"
+      read:users: "users can read"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+  basicAuth:
+    type: "basic"
+definitions:
+  User:
+    type: "object"
+    required:
+    - "email"
+    - "name"
+    - "password"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      email:
+        type: "string"
+        example: "someone@somesite.com"
+      name:
+        type: "string"
+        example: "Matt Shen"
+      password:
+        type: "string"
+        example: "xyz"
+  Team:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      name:
+        type: "string"
+        example: "Excellent Smart Team X"
+      createdOn:
+        type: "string"
+        format: "date-time"
+        example: "2016-08-29T09:12:33.001Z"
+      createBy:
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      ower:
+        $ref: "#/definitions/User"
+      members:
+        type: "array"
+        items:
+          $ref: "#/definitions/User"
+  Task:
+    type: "object"
+    required:
+    - "forTeam"
+    - "points"
+    - "subject"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      subject:
+        type: "string"
+        example: "Clean the kitchen"
+      description:
+        type: "string"
+        example: "* Put dishes into the dishwasher\n* Clean the dininng table\n* Take\
+          \ the rubbish to the rubbish bin outside\n"
+      points:
+        type: "integer"
+        format: "int32"
+        example: 2
+      createdBy:
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      createdOn:
+        type: "string"
+        format: "date-time"
+        example: "2016-08-29T09:12:33.001Z"
+      forTeam:
+        $ref: "#/definitions/Team"
+  Comment:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      content:
+        type: "string"
+        example: "Well done"
+      createdBy:
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      createdOn:
+        type: "string"
+        format: "date-time"
+        example: "2016-08-29T09:12:33.001Z"
+      forTask:
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+  ApiResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+      message:
+        type: "string"
+  InventoryItem:
+    type: "object"
+    required:
+    - "id"
+    - "manufacturer"
+    - "name"
+    - "releaseDate"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      name:
+        type: "string"
+        example: "Widget Adapter"
+      releaseDate:
+        type: "string"
+        format: "int32"
+        example: "2016-08-29T09:12:33.001Z"
+      manufacturer:
+        $ref: "#/definitions/Manufacturer"
+  Manufacturer:
+    required:
+    - "name"
+    properties:
+      name:
+        type: "string"
+        example: "ACME Corporation"
+      homePage:
+        type: "string"
+        format: "url"
+        example: "https://www.acme-corp.com"
+      phone:
+        type: "string"
+        example: "408-867-5309"
+responses:
+  UnauthorizedError:
+    description: "Authentication information is missing or invalid"
+    headers:
+      WWW_Authenticate:
+        type: "string"
