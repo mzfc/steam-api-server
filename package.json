@@ -16,6 +16,10 @@
     "basic-auth-connect": "^1.0.0",
     "connect": "^3.2.0",
     "js-yaml": "^3.3.0",
+    "mongoose": "~4.7.3",
     "swagger-tools": "0.10.1"
+  },
+  "devDependencies": {
+    "babel-register": "^6.24.1"
   }
 }
