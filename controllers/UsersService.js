@@ -43,6 +43,11 @@ exports.searchTeams = function (args, res, next) {
   **/
 
   Team.find((err, teams) => {
+
+    teams.forEach(team => {
+      console.log("team", team);
+    });
+
     if (err) res.end(err);
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(teams || {}, null, 2));
