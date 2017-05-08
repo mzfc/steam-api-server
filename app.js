@@ -1,9 +1,5 @@
 'use strict';
 
-const x = '123';
-
-console.log('es6 testing', x);
-
 var app = require('connect')();
 var basicAuth = require('basic-auth-connect');
 var http = require('http');

@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 
 var TeamSchema = new Schema({
   name: String,
-  createdOn: String,
+  createdOn: { type: Date, default: Date.now },
   createBy: String,
 });
 
