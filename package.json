@@ -4,11 +4,12 @@
   "description": "This is STeam API",
   "main": "index.js",
   "scripts": {
-    "prestart": "npm install",
-    "start": "node index.js"
+    "prestart": "wget https://api.swaggerhub.com/apis/mattshen/steamapi/1.0.0/swagger.yaml -O ./api/swagger.yaml",
+    "start": "nodemon index.js"
   },
   "keywords": [
-    "swagger"
+    "swagger",
+    "api"
   ],
   "license": "Apache-2.0",
   "private": true,
@@ -16,6 +17,7 @@
     "basic-auth-connect": "^1.0.0",
     "connect": "^3.2.0",
     "js-yaml": "^3.3.0",
+    "log4js": "^1.1.1",
     "mongoose": "~4.7.3",
     "swagger-tools": "0.10.1"
   },

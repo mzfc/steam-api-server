@@ -6,13 +6,13 @@ var Schema = mongoose.Schema;
 var TeamSchema = new Schema({
   name: String,
   createdOn: { type: Date, default: Date.now },
-  createBy: String,
+  createdBy: String,
 });
 
 TeamSchema.set('toObject', {
   transform: function (doc, ret, options) {
     ret.id = ret._id;
-    delete ret._id;
+    delete ret._id; 
     return ret;
   }
 });
