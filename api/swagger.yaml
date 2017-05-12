@@ -24,6 +24,7 @@ security:
 - basicAuth: []
 paths:
   /users:
+    x-swagger-router-controller: "Users"
     get:
       tags:
       - "users"
@@ -90,6 +91,7 @@ paths:
           description: "Invalid input"
       x-swagger-router-controller: "Developers"
   /teams:
+    x-swagger-router-controller: "Users"
     get:
       tags:
       - "users"
@@ -129,7 +131,6 @@ paths:
               $ref: "#/definitions/Team"
         400:
           description: "bad input parameter"
-      x-swagger-router-controller: "Users"
     post:
       tags:
       - "users"
@@ -156,6 +157,7 @@ paths:
           description: "Invalid input"
       x-swagger-router-controller: "Users"
   /teams/{id}:
+    x-swagger-router-controller: "Users"
     get:
       tags:
       - "users"
@@ -197,6 +199,12 @@ paths:
         description: "ID of team to patch"
         required: true
         type: "string"
+      - in: "body"
+        name: "body"
+        description: "team object that needs to be updated"
+        required: true
+        schema:
+          $ref: "#/definitions/Team"
       responses:
         200:
           description: OK
@@ -205,7 +213,29 @@ paths:
         400:
           description: "Invalid ID supplied"
         404:
-          description: "Team not found"    
+          description: "Team not found"
+    delete:
+      tags:
+      - "users"
+      summary: Delete team by ID
+      description: Delete a single team
+      operationId: deleteTeamById
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: Id of team to delete
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Team not found"
+    
   /inventory:
     get:
       tags:

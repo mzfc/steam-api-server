@@ -1,6 +1,7 @@
 'use strict';
-
 var Team = require('../models/Team');
+var log4js = require('log4js');
+var logger = log4js.getLogger();
 
 exports.createTeam = function (args, res, next) {
   /**
@@ -27,9 +28,36 @@ exports.createTeam = function (args, res, next) {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({
       "code": 0,
-      "type": "aeiou",
-      "message": "aeiou"
+      "type": "success",
+      "message": "success"
     }), null, 2);
+  });
+
+}
+
+exports.updateTeam = function (args, res, next) {
+
+  Team.findById(args.id.value, function (err, team) {
+    if (err) res.end(err);
+
+    if (team) {
+      Object.assign(team, args.body.value);
+      logger.debug('the team obj going to store', team);
+      team.save(function (err) {
+        console.error('errors happen', err);
+        if (err) res.end(err);
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({
+          "code": 200,
+          "type": "success",
+          "message": "Team is updated"
+        }), null, 2);
+      });
+    } else {
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify(team || {}, null, 2));
+    }
+
   });
 
 }
@@ -43,14 +71,29 @@ exports.searchTeams = function (args, res, next) {
   **/
 
   Team.find((err, teams) => {
-
-    teams.forEach(team => {
-      console.log("team", team);
-    });
-
     if (err) res.end(err);
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(teams || {}, null, 2));
+  });
+
+}
+
+exports.getTeamById = function (args, res, next) {
+
+  Team.findById(args.id.value, function (err, team) {
+    if (err) res.end(err);
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(team || {}, null, 2));
+  });
+
+}
+
+exports.deleteTeamById = function (args, res, next) {
+
+  Team.findById(args.id.value).remove(function (err) {
+    if (err) res.end(err);
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ code: 200, type: 'success', message: 'Operation is successful' } || {}, null, 2));
   });
 
 }
