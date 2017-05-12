@@ -3,7 +3,7 @@
 var url = require('url');
 
 
-var Admins = require('./AdminsService');
+var Admins = require('../services/AdminsService');
 
 
 module.exports.addInventory = function addInventory (req, res, next) {

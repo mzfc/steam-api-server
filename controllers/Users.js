@@ -3,7 +3,7 @@
 var url = require('url');
 
 
-var Users = require('./UsersService');
+var Users = require('../services/UsersService');
 
 
 //C

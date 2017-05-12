@@ -3,7 +3,7 @@
 var url = require('url');
 
 
-var Developers = require('./DevelopersService');
+var Developers = require('../services/DevelopersService');
 
 
 module.exports.createUser = function createUser (req, res, next) {
