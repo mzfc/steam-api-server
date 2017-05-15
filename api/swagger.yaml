@@ -20,11 +20,16 @@ tags:
   description: "Operations available to regular users"
 schemes:
 - "https"
+consumes:
+- "application/json"
+produces:
+- "application/json"
 security:
 - basicAuth: []
+
 paths:
   /users:
-    x-swagger-router-controller: "Users"
+    x-swagger-router-controller: "users"
     get:
       tags:
       - "users"
@@ -55,11 +60,6 @@ paths:
               $ref: "#/definitions/User"
         400:
           description: "bad input parameter"
-        401:
-          description: "Authentication information is missing or invalid"
-          headers:
-            WWW_Authenticate:
-              type: "string"
       security:
       - users_auth:
         - "write:users"
@@ -88,9 +88,85 @@ paths:
             $ref: "#/definitions/ApiResponse"
         405:
           description: "Invalid input"
+          
+  /users/{id}:
+    x-swagger-router-controller: "users"
+    get:
+      tags:
+      - "users"
+      summary: "Find user by ID"
+      description: "Returns a single user"
+      operationId: "getUserById"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of user to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "User not found"
+    patch:
+      tags:
+      - "users"
+      summary: "Patch user by ID"
+      description: "Patches a single user"
+      operationId: "updateUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of user to patch"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "user object that needs to be updated"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "user not found"
+    delete:
+      tags:
+      - "users"
+      summary: Delete user by ID
+      description: Delete a single user
+      operationId: deleteUserById
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: Id of user to delete
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "User not found"          
 
   /teams:
-    x-swagger-router-controller: "Users"
+    x-swagger-router-controller: "teams"
     get:
       tags:
       - "users"
@@ -154,9 +230,8 @@ paths:
             $ref: "#/definitions/ApiResponse"
         405:
           description: "Invalid input"
-      x-swagger-router-controller: "Users"
   /teams/{id}:
-    x-swagger-router-controller: "Users"
+    x-swagger-router-controller: "teams"
     get:
       tags:
       - "users"
@@ -186,12 +261,8 @@ paths:
       tags:
       - "users"
       summary: "Patch team by ID"
-      description: "Patches a single team"
+      description: "Patches a single user"
       operationId: "updateTeam"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
       parameters:
       - name: "id"
         in: "path"
@@ -200,7 +271,7 @@ paths:
         type: "string"
       - in: "body"
         name: "body"
-        description: "team object that needs to be updated"
+        description: "Team object that needs to be updated"
         required: true
         schema:
           $ref: "#/definitions/Team"
@@ -219,8 +290,6 @@ paths:
       summary: Delete team by ID
       description: Delete a single team
       operationId: deleteTeamById
-      produces:
-      - application/json
       parameters:
       - name: id
         in: path
@@ -234,6 +303,135 @@ paths:
           description: "Invalid ID supplied"
         404:
           description: "Team not found"
+          
+  /tasks:
+    x-swagger-router-controller: "tasks"
+    get:
+      tags:
+      - "users"
+      summary: "search tasks"
+      description: "By passing in the appropirate options, you can search for\navailable\
+        \ tasks in the system\n"
+      operationId: "searchTasks"
+      parameters:
+      - name: "searchString"
+        in: "query"
+        description: "pass an optional search string for looking up tasks"
+        required: false
+        type: "string"
+      - name: "skip"
+        in: "query"
+        description: "number of records to skip for pagination"
+        required: false
+        type: "integer"
+        minimum: 0
+        format: "int32"
+      - name: "limit"
+        in: "query"
+        description: "maximum number of records to return"
+        required: false
+        type: "integer"
+        maximum: 30.0
+        minimum: 0
+        format: "int32"
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Task"
+        400:
+          description: "bad input parameter"
+    post:
+      tags:
+      - "users"
+      summary: "create a new Task"
+      description: ""
+      operationId: "createTask"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "task object that needs to be added to the system"
+        required: true
+        schema:
+          $ref: "#/definitions/Task"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        405:
+          description: "Invalid input"
+  /tasks/{id}:
+    x-swagger-router-controller: "tasks"
+    get:
+      tags:
+      - "users"
+      summary: "Find task by ID"
+      description: "Returns a single task"
+      operationId: "getTaskById"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of task to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Task"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Task not found"
+    patch:
+      tags:
+      - "users"
+      summary: "Patch task by ID"
+      description: "Patches a single user"
+      operationId: "updateTask"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of task to patch"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "task object that needs to be updated"
+        required: true
+        schema:
+          $ref: "#/definitions/Task"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/Task"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Task not found"
+    delete:
+      tags:
+      - "users"
+      summary: Delete task by ID
+      description: Delete a single team
+      operationId: deleteTaskById
+      parameters:
+      - name: id
+        in: path
+        description: Id of task to delete
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Task not found"
     
 securityDefinitions:
   users_auth:
@@ -260,7 +458,7 @@ definitions:
     properties:
       id:
         type: "string"
-        format: "uuid"
+        readOnly: true
         example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
       email:
         type: "string"
@@ -279,6 +477,7 @@ definitions:
     properties:
       id:
         type: "string"
+        readOnly: true
         example: "59153f39394d1250dc23f60b"
       name:
         type: "string"
@@ -294,13 +493,13 @@ definitions:
   Task:
     type: "object"
     required:
-    - "forTeam"
+    - "teamId"
     - "points"
     - "subject"
     properties:
       id:
         type: "string"
-        format: "uuid"
+        readOnly: true
         example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
       subject:
         type: "string"
@@ -315,20 +514,21 @@ definitions:
         example: 2
       createdBy:
         type: "string"
-        format: "uuid"
         example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
       createdOn:
         type: "string"
         format: "date-time"
         example: "2016-08-29T09:12:33.001Z"
-      forTeam:
-        $ref: "#/definitions/Team"
+      teamId:
+        type: "string"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
   Comment:
     type: "object"
     properties:
       id:
         type: "string"
         format: "uuid"
+        readOnly: true
         example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
       content:
         type: "string"

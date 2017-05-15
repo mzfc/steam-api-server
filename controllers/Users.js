@@ -1,36 +1,30 @@
 'use strict';
 
 var url = require('url');
-
-
-var Users = require('../services/UsersService');
-
+const crud = require('../services/crudService');
+const User = require('../models/User');
 
 //C
-module.exports.createTeam = function createTeam (req, res, next) {
-  Users.createTeam(req.swagger.params, res, next);
+module.exports.createUser = function createUser(req, res, next) {
+  crud.create(User, req.swagger.params, res, next);
 };
 
 //U
-module.exports.updateTeam = function updateTeam (req, res, next) {
-  Users.updateTeam(req.swagger.params, res, next);
+module.exports.updateUser = function updateUser(req, res, next) {
+  crud.update(User, req.swagger.params, res, next);
 };
 
 //S
-module.exports.searchTeams = function searchTeams (req, res, next) {
-  Users.searchTeams(req.swagger.params, res, next);
+module.exports.searchUsers = function searchUsers(req, res, next) {
+  crud.search(User, req.swagger.params, res, next);
 };
+
 //R
-module.exports.getTeamById = function getTeamById (req, res, next) {
-  Users.getTeamById(req.swagger.params, res, next);
+module.exports.getUserById = function getUserById(req, res, next) {
+  crud.getById(User, req.swagger.params, res, next);
 };
 
 //D
-module.exports.deleteTeamById = function deleteTeamById (req, res, next) {
-  Users.deleteTeamById(req.swagger.params, res, next);
+module.exports.deleteUserById = function deleteUserById(req, res, next) {
+  crud.deleteById(User, req.swagger.params, res, next);
 };
-
-module.exports.searchUsers = function searchUsers (req, res, next) {
-  Users.searchUsers(req.swagger.params, res, next);
-};
-
