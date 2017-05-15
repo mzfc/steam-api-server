@@ -1,6 +1,4 @@
 'use strict';
-
-var url = require('url');
 const crud = require('../services/crudService');
 const Task = require('../models/Task');
 

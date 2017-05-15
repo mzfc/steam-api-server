@@ -1,30 +1,28 @@
 'use strict';
-var url = require('url');
-var Users = require('../services/UsersService');
+const crud = require('../services/crudService');
+const Team = require('../models/Team');
 
 //C
 module.exports.createTeam = function createTeam (req, res, next) {
-  Users.createTeam(req.swagger.params, res, next);
+  crud.create(Team, req.swagger.params, res, next);
 };
 
 //U
 module.exports.updateTeam = function updateTeam (req, res, next) {
-  Users.updateTeam(req.swagger.params, res, next);
+  crud.update(Team, req.swagger.params, res, next);
 };
 
 //S
 module.exports.searchTeams = function searchTeams (req, res, next) {
-  Users.searchTeams(req.swagger.params, res, next);
+  crud.search(Team, req.swagger.params, res, next);
 };
 
 //R
 module.exports.getTeamById = function getTeamById (req, res, next) {
-  Users.getTeamById(req.swagger.params, res, next);
+  crud.getById(Team, req.swagger.params, res, next);
 };
 
 //D
 module.exports.deleteTeamById = function deleteTeamById (req, res, next) {
-  Users.deleteTeamById(req.swagger.params, res, next);
+  crud.deleteById(Team, req.swagger.params, res, next);
 };
-
-// ]
